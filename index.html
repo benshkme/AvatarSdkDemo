@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaltura Avatar Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="#FF5C00" opacity="0.15"/>
+        <circle cx="12" cy="10" r="4" fill="#FF5C00"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#FF5C00" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Kaltura Avatar Demo
+    </div>
+    <button id="settings-btn" title="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      Settings
+    </button>
+  </header>
+
+  <main>
+    <!-- Avatar display -->
+    <section class="avatar-section">
+      <div id="avatar-container">
+        <div id="avatar-placeholder">
+          <div class="placeholder-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="10" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3 21c0-5 4-9 9-9s9 4 9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p>Configure your settings and connect to see the avatar</p>
+          <button id="connect-btn" class="btn-accent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            Connect Avatar
+          </button>
+        </div>
+      </div>
+
+      <div class="status-bar">
+        <div class="status-indicator">
+          <span id="status-dot" class="dot idle"></span>
+          <span id="status-text">Not Connected</span>
+        </div>
+        <div class="status-actions">
+          <button id="interrupt-btn" style="display:none" class="btn-ghost btn-sm" title="Interrupt speech">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            Pause
+          </button>
+          <button id="disconnect-btn" style="display:none" class="btn-ghost btn-sm btn-danger">
+            Disconnect
+          </button>
+          <button id="reconnect-btn" style="display:none" class="btn-ghost btn-sm">
+            Reconnect
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls-section">
+      <!-- Text to speech -->
+      <div class="control-card">
+        <div class="control-card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Text to Speech
+        </div>
+        <div class="text-control">
+          <textarea
+            id="text-input"
+            placeholder="Type something for the avatar to say..."
+            rows="3"
+            disabled
+          ></textarea>
+          <button id="say-btn" class="btn-accent" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Say This
+          </button>
+        </div>
+      </div>
+
+      <!-- Audio recording -->
+      <div class="control-card">
+        <div class="control-card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+          Voice Recording
+        </div>
+
+        <!-- Idle: record button -->
+        <div id="record-idle" class="audio-state">
+          <button id="record-btn" class="btn-record" disabled>
+            <span class="record-dot"></span>
+            Record
+          </button>
+          <span class="audio-hint">Record audio for the avatar to lip-sync</span>
+        </div>
+
+        <!-- Active: recording in progress -->
+        <div id="record-active" class="audio-state" style="display:none">
+          <div class="recording-indicator">
+            <span class="record-pulse"></span>
+            Recording
+          </div>
+          <span id="record-timer" class="timer">0:00</span>
+          <button id="stop-btn" class="btn-stop">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            Stop
+          </button>
+        </div>
+
+        <!-- Review: playback + actions -->
+        <div id="record-review" class="audio-state" style="display:none">
+          <audio id="audio-preview" controls></audio>
+          <div class="review-actions">
+            <button id="rerecord-btn" class="btn-ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+              </svg>
+              Re-record
+            </button>
+            <button id="send-audio-btn" class="btn-accent">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Send to Avatar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button id="close-modal" class="btn-icon-sm" title="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span class="field-label">Kaltura Session (KS)</span>
+          <textarea id="ks-input" placeholder="Paste your KS token here..." rows="4"></textarea>
+        </label>
+        <label class="field">
+          <span class="field-label">Avatar ID</span>
+          <input type="text" id="avatar-id-input" placeholder="e.g. avatar-123" />
+        </label>
+        <label class="field">
+          <span class="field-label">Voice ID <span class="optional">(optional)</span></span>
+          <input type="text" id="voice-id-input" placeholder="e.g. voice-456" />
+        </label>
+        <div class="security-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Your KS is stored locally in this browser. For production, keep KS server-side only.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-settings-btn" class="btn-accent btn-full">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

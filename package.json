@@ -1,0 +1,18 @@
+{
+  "name": "kaltura-avatar-sdk-demo",
+  "version": "1.0.0",
+  "description": "Interactive demo for Kaltura Live Avatar SDK",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@unisphere/models-sdk-js": "latest",
+    "lamejs": "^1.2.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
