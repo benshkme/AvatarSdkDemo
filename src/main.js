@@ -75,7 +75,7 @@ function showToast(msg, isError = false) {
   });
   toastTimeout = setTimeout(() => {
     toastEl.classList.remove('show');
-  }, 3000);
+  }, isError ? 5000 : 3000);
 }
 
 // ─── Status helpers ───────────────────────────────────────────────────────────
@@ -139,6 +139,10 @@ saveSettingsBtn.addEventListener('click', () => {
 
   if (!ks)       { showToast('KS is required.', true); return; }
   if (!avatarId) { showToast('Avatar ID is required.', true); return; }
+  if (voiceId && voiceId.startsWith('eself-')) {
+    showToast('Voice IDs starting with "eself-" are no longer supported. Please use a different voice ID.', true);
+    return;
+  }
 
   saveConfig({ ks, avatarId, voiceId });
   settingsModal.style.display = 'none';
@@ -166,6 +170,11 @@ async function connectAvatar() {
   if (!cfg.ks || !cfg.avatarId) {
     openSettings();
     showToast('Please configure your settings first.', true);
+    return;
+  }
+
+  if (cfg.voiceId && cfg.voiceId.startsWith('eself-')) {
+    showToast('Voice IDs starting with "eself-" are no longer supported. Please use a different voice ID or leave the field empty.', true);
     return;
   }
 
@@ -232,45 +241,11 @@ async function connectAvatar() {
       showToast(`Avatar error: ${err.message || err}`, true);
     });
 
-    const isEself = cfg.voiceId && cfg.voiceId.startsWith('eself-');
-
-    if (isEself) {
-      // eself- voices are Kaltura voice clones. The SDK hardcodes modelId:'eleven_flash_v2_5'
-      // for all voices which the API rejects for cloned voices. Create the session manually
-      // without modelId, then hand off to initSession for WebRTC setup.
-      const BASE = 'https://api.avatar.us.kaltura.ai/v1/avatar-session';
-      const res = await fetch(`${BASE}/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `ks ${cfg.ks}`,
-        },
-        body: JSON.stringify({
-          clientId: 'kaltura-avatar-sdk',
-          visualConfig: { id: cfg.avatarId },
-          voiceConfig: { id: cfg.voiceId },
-        }),
-      });
-
-      if (!res.ok) {
-        const body = await res.text();
-        throw new Error(`Session create failed (${res.status}): ${body}`);
-      }
-
-      const { success, error, sessionId, token } = await res.json();
-      if (!success) throw new Error(error || 'Session create failed');
-
-      await avatarSession.initSession(
-        { sessionId, token },
-        { videoContainerId: 'avatar-container' }
-      );
-    } else {
-      await avatarSession.createSession({
-        avatarId: cfg.avatarId,
-        ...(cfg.voiceId ? { voiceId: cfg.voiceId } : {}),
-        videoContainerId: 'avatar-container',
-      });
-    }
+    await avatarSession.createSession({
+      avatarId: cfg.avatarId,
+      ...(cfg.voiceId ? { voiceId: cfg.voiceId } : {}),
+      videoContainerId: 'avatar-container',
+    });
 
   } catch (err) {
     console.error('[Avatar] connect failed:', err);
