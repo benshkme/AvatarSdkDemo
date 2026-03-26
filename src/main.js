@@ -1,5 +1,5 @@
 import { KalturaAvatarSession } from '@unisphere/models-sdk-js';
-import lamejs from 'lamejs';
+import { Mp3Encoder } from '@breezystack/lamejs';
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -431,7 +431,7 @@ async function convertToMp3(audioBlob) {
   const numChannels = 1; // encode as mono
   const bitRate     = 128;
 
-  const encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, bitRate);
+  const encoder = new Mp3Encoder(numChannels, sampleRate, bitRate);
   const pcmData  = audioBuffer.getChannelData(0); // Float32Array
 
   // Float32 → Int16

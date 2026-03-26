@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@unisphere/models-sdk-js": "latest",
-    "lamejs": "^1.2.1"
+    "@breezystack/lamejs": "^1.2.7",
+    "@unisphere/models-sdk-js": "latest"
   },
   "devDependencies": {
     "vite": "^5.0.0"
