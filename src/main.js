@@ -232,11 +232,45 @@ async function connectAvatar() {
       showToast(`Avatar error: ${err.message || err}`, true);
     });
 
-    await avatarSession.createSession({
-      avatarId: cfg.avatarId,
-      ...(cfg.voiceId ? { voiceId: cfg.voiceId } : {}),
-      videoContainerId: 'avatar-container',
-    });
+    const isEself = cfg.voiceId && cfg.voiceId.startsWith('eself-');
+
+    if (isEself) {
+      // eself- voices are Kaltura voice clones. The SDK hardcodes modelId:'eleven_flash_v2_5'
+      // for all voices which the API rejects for cloned voices. Create the session manually
+      // without modelId, then hand off to initSession for WebRTC setup.
+      const BASE = 'https://api.avatar.us.kaltura.ai/v1/avatar-session';
+      const res = await fetch(`${BASE}/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `ks ${cfg.ks}`,
+        },
+        body: JSON.stringify({
+          clientId: 'kaltura-avatar-sdk',
+          visualConfig: { id: cfg.avatarId },
+          voiceConfig: { id: cfg.voiceId },
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(`Session create failed (${res.status}): ${body}`);
+      }
+
+      const { success, error, sessionId, token } = await res.json();
+      if (!success) throw new Error(error || 'Session create failed');
+
+      await avatarSession.initSession(
+        { sessionId, token },
+        { videoContainerId: 'avatar-container' }
+      );
+    } else {
+      await avatarSession.createSession({
+        avatarId: cfg.avatarId,
+        ...(cfg.voiceId ? { voiceId: cfg.voiceId } : {}),
+        videoContainerId: 'avatar-container',
+      });
+    }
 
   } catch (err) {
     console.error('[Avatar] connect failed:', err);
