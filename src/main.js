@@ -98,6 +98,14 @@ function setConnected(yes) {
   if (yes) avatarPlaceholder.style.display = 'none';
 }
 
+function markReady() {
+  if (statusDot.classList.contains('ready')) return; // already done
+  setStatus('ready', 'Connected & Ready');
+  setConnected(true);
+  connectBtn.disabled = false;
+  reconnectBtn.disabled = false;
+}
+
 function setSessionEnded() {
   isSpeaking = false;
   interruptBtn.style.display = 'none';
@@ -173,7 +181,8 @@ async function connectAvatar() {
 
     avatarSession.on('stateChange', (state) => {
       console.log('[Avatar] state:', state);
-      switch (state) {
+      const s = String(state).toUpperCase();
+      switch (s) {
         case 'IDLE':
           setStatus('idle', 'Idle');
           break;
@@ -181,10 +190,7 @@ async function connectAvatar() {
           setStatus('connecting', 'Creating session…');
           break;
         case 'READY':
-          setStatus('ready', 'Connected & Ready');
-          setConnected(true);
-          connectBtn.disabled = false;
-          reconnectBtn.disabled = false;
+          markReady();
           break;
         case 'ENDED':
           setStatus('ended', 'Session ended');
@@ -201,7 +207,11 @@ async function connectAvatar() {
 
     avatarSession.on('connectionChange', (state) => {
       console.log('[Avatar] connection:', state);
-      if (state === 'FAILED' || state === 'CLOSED') {
+      const s = String(state).toUpperCase();
+      if (s === 'CONNECTED') {
+        // WebRTC stream is live — treat as ready regardless of session state
+        markReady();
+      } else if (s === 'FAILED' || s === 'CLOSED') {
         setStatus('error', `Connection ${state.toLowerCase()}`);
       }
     });
